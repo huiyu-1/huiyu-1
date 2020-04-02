@@ -45,11 +45,11 @@ def index():
 
 # 自定义命令
 @app.cli.command()  # 注册为命令
-# @click.option('--drop',is_flag=True,help="先删除再创建")
-def initdb():
-    # if drop:
-        # db.drop_all()
+@click.option('--drop',is_flag=True,help="先删除再创建")
+def initdb(drop):
+    if drop:
+        db.drop_all()
     db.create_all()
-    # click.echo("初始化数据库完成")
+    click.echo("初始化数据库完成")
 
 
