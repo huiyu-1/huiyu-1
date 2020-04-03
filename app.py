@@ -32,15 +32,17 @@ class Movie(db.Model):
 # views视图函数
 @app.route('/')
 def index():
-    name = 'lion'
-    movies = [
-        {"title":"萨霍","year":"2019"},
-        {"title":"星游记","year":"2020"},
-        {"title":"急速备战","year":"2019"},
-        {"title":"叶问4","year":"2019"},
-        {"title":"三人行","year":"2016"},
-    ]
-    return render_template('index.html',name=name,movies=movies)
+    # name = 'lion'
+    # movies = [
+    #     {"title":"萨霍","year":"2019"},
+    #     {"title":"星游记","year":"2020"},
+    #     {"title":"急速备战","year":"2019"},
+    #     {"title":"叶问4","year":"2019"},
+    #     {"title":"三人行","year":"2016"},
+    # ]
+    user = User.query.first()       # 查询出用户记录
+    movies = Movie.query.all()      
+    return render_template('index.html',user=user,movies=movies)
 
 
 # 自定义命令
@@ -52,4 +54,21 @@ def initdb(drop):
     db.create_all()
     click.echo("初始化数据库完成")
 
-
+# 向数据库中插入数据
+@app.cli.command()
+def forge():
+    name = 'lion'
+    movies = [
+        {"title":"萨霍","year":"2019"},
+        {"title":"星游记","year":"2020"},
+        {"title":"急速备战","year":"2019"},
+        {"title":"叶问4","year":"2019"},
+        {"title":"三人行","year":"2016"},
+    ]
+    user = User(name=name)
+    db.session.add(user)
+    for m in movies:
+        movie = Movie(title=m['title'],year=m['year'])
+        db.session.add(movie)
+    db.session.commit()
+    click.echo("导入数据完成")
